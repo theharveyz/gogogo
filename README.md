@@ -1,2 +1,2 @@
 # gogogo
-Generate html files from the markdown file.
+My learning examples for Golang.
