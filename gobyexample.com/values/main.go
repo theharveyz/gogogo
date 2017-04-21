@@ -6,11 +6,17 @@ import (
 
 func main() {
 	const (
-		I int = 1
-		M     = iota
-		S     = iota
+		I       int = 1
+		M           = iota
+		S           = iota
+		a, b, c     = `
+		||||||
+		\\\\\
+		`, "\\\\\\", '#' // 35
 	)
-
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
 	fmt.Println("go" + "lang")
 	fmt.Println(I, M)
 	fmt.Println(I + M)
