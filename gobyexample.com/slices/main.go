@@ -24,7 +24,7 @@ func main() {
 	s1 := make([]int, 3)
 	fmt.Println("len:", len(s1), ";cap:", cap(s1)) // 默认为 初始化len的长度
 
-	// copy ==> 复制数据
+	// copy ==> 复制数据 --> 引用分离
 	c := make([]string, len(s))
 	copy(c, s)
 	c[1] = "111111"
@@ -53,4 +53,11 @@ func main() {
 		}
 	}
 	fmt.Println(twoDS1)
+
+	// append 超过cap后, 会重新分配一段连续内存,并将原有关联数组copy过去
+	one := make([]int, 1)
+	one[0] = 1
+	two := append(one, 2)
+	two[0] = 2
+	fmt.Println(one, two) // [1], [2,2]
 }
