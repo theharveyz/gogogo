@@ -15,6 +15,8 @@ My learning examples for Golang.
     - MySQL Driver
     - connecting pool
 - rpc
+    - http rpc
+    - tcp rpc
+    - json rpc
     - gRPC
     - protobuf
-    - ...
