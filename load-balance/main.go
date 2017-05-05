@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	rr := &round_robin.RoundRobin{1, make(map[int]interface{}, 0)}
-	fmt.Println(&round_robin.RoundRobin)
+	rr := &round_robin.RoundRobin{Index: 1, Keys: make(map[int]interface{})}
+	fmt.Println(rr)
 }

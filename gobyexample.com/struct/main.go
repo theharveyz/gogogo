@@ -48,4 +48,13 @@ func main() {
 	// same module
 	test()
 	Test()
+
+	// 测试receiver的引用问题
+	demo := &Demo{}
+	demo.Add(1)
+	fmt.Println(demo.s) //  [] ====> Add里的 receiver为重新分配内存, 与demo不存在引用关系
+
+	demo.PAdd(1)
+	demo.PAdd(1)
+	fmt.Println(demo.s) // [1 1] ===> 与receiver存在引用关系
 }
