@@ -20,3 +20,5 @@ My learning examples for Golang.
     - json rpc
     - gRPC
     - protobuf
+- load balance
+    - round robin

@@ -44,4 +44,8 @@ func main() {
 	fmt.Println("bmiP:", harveyz.bmiP())
 	fmt.Println("age是否改变:", harveyz.age) // age是否改变: 18 => 是
 	fmt.Println("bmiP:", (&harveyz).bmiP())
+
+	// same module
+	test()
+	Test()
 }
