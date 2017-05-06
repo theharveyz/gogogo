@@ -57,4 +57,9 @@ func main() {
 	demo.PAdd(1)
 	demo.PAdd(1)
 	fmt.Println(demo.s) // [1 1] ===> 与receiver存在引用关系
+
+	// 任何类型都可以设置方法
+	var is IntStruct = 1111
+	fmt.Println(is.String())
+
 }

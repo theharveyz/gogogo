@@ -25,3 +25,10 @@ func (d Demo) Add(i int) {
 func (d *Demo) PAdd(i int) {
 	d.s = append(d.s, i)
 }
+
+type IntStruct int
+
+func (is *IntStruct) String() string {
+	fmt.Println(is)
+	return string(*is)
+}
