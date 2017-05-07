@@ -28,7 +28,17 @@ func (d *Demo) PAdd(i int) {
 
 type IntStruct int
 
-func (is *IntStruct) String() string {
-	fmt.Println(is)
-	return string(*is)
+func (is *IntStruct) String() {
+	fmt.Println(*is)
+}
+
+type DemoFunc func(s string)
+
+func (fn *DemoFunc) DemoFuncFunc(s string) {
+	(*fn)(s)
+}
+
+// 动态更改fn
+func (fn *DemoFunc) Override(f func(s string)) {
+	*fn = f
 }

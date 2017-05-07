@@ -7,6 +7,8 @@ My learning examples for Golang.
     - net/http package
     - routing
     - fasthttp
+    - tcp server
+    - udp server
 - concurrency security
     - lock
     - atomic

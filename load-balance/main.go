@@ -7,6 +7,21 @@ import (
 )
 
 func main() {
-	rr := &round_robin.RoundRobin{Index: 1, Keys: make(map[int]interface{})}
-	fmt.Println(rr)
+	rr := &round_robin.RoundRobin{}
+	rr.AddNode(1, 2, 3, 4)
+
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
+	rr.AddNode(5)
+	rr.RemoveNode(2)
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
+	fmt.Println(rr.GetNode())
 }

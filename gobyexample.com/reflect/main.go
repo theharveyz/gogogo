@@ -9,13 +9,13 @@ import (
 type Stuff struct {
 	Erp   string `erp`
 	Email string `email`
-	_pri  string `pri:"test1" email:"test2"`
+	_pri  string `pri:"test1" email:"test2"` // tags: 多个tag
 }
 
 func main() {
 	s := &Stuff{"zhanghuawei7", "zhanghuawei@jd.com", "pri"} // pointer:
 	fmt.Println("stuff:", s)
-	v := reflect.ValueOf(s)
+	v := reflect.ValueOf(s) // interface 类型的 value ==> data..
 	fmt.Println(v)
 
 	rv := reflect.TypeOf(s)

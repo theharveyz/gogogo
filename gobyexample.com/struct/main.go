@@ -59,7 +59,16 @@ func main() {
 	fmt.Println(demo.s) // [1 1] ===> 与receiver存在引用关系
 
 	// 任何类型都可以设置方法
-	var is IntStruct = 1111
-	fmt.Println(is.String())
+	var is IntStruct = 11
+	is.String()
+
+	// 函数的方法
+	var f DemoFunc
+	fmt.Println(f == nil)
+	f.Override(func(s string) {
+		fmt.Println(s)
+	})
+	fmt.Println(f == nil)
+	f.DemoFuncFunc("test demo func func")
 
 }
