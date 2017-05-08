@@ -4,6 +4,18 @@ import (
 	"fmt"
 )
 
+type demo struct {
+	S string
+}
+
+func new() *demo {
+	return &demo{"ptr"}
+}
+
+func new1() demo {
+	return demo{"obj"}
+}
+
 // 指针的操作
 // 传值
 func zeroval(i int) {
@@ -30,4 +42,29 @@ func main() {
 	// zeroval: 1
 	// zeroptr: 0
 	// pointer addr: 0xc42000e280
+
+	demo := new()
+	fmt.Println(demo.S)
+	demo2 := demo
+	fmt.Println(demo2)
+	demo2.S = "demo2"
+	fmt.Println(demo.S)
+	fmt.Println(demo2.S)
+	demo2 = new()
+	fmt.Println(demo.S)
+	fmt.Println(demo2.S)
+
+	demo3 := new1()
+	demo4 := demo3
+	fmt.Println("demo3:", demo3.S)
+	fmt.Println("demo4:", demo4.S)
+	demo4.S = "demo4"
+	fmt.Println("demo3:", demo3.S)
+
+	a, c := 1, 2
+	b := &a
+	fmt.Println(b)
+	b = &c
+	fmt.Println(b)
+	fmt.Println(a)
 }

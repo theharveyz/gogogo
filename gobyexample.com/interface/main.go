@@ -16,6 +16,7 @@ func (r rect) area() float64 {
 	return r.height * r.weight
 }
 
+// interface
 func measure(g getmetry) {
 	fmt.Println(g.area())
 }
