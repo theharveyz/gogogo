@@ -24,4 +24,6 @@ func main() {
 	fmt.Println(rr.GetNode())
 	fmt.Println(rr.GetNode())
 	fmt.Println(rr.GetNode())
+	fmt.Println(rr.SeekIndex())
+	fmt.Println(rr.SeekIndex())
 }
