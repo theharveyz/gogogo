@@ -31,4 +31,14 @@ func main() {
 		fmt.Println("timeout")
 
 	}
+
+	c3 := make(chan string)
+	msg := "hello"
+	// no blocking
+	select {
+	case c3 <- msg:
+		fmt.Println("msg sent")
+	default:
+		fmt.Println("default firstly")
+	}
 }
