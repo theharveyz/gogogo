@@ -14,6 +14,7 @@ My learning examples for Golang.
     - atomic
     - timeout
         - time
+        - ticker
     - WaitGroup
     - sync.Pool
     - context
