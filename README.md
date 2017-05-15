@@ -14,7 +14,9 @@ My learning examples for Golang.
     - atomic
     - timeout
         - time
-        - Context
+    - WaitGroup
+    - sync.Pool
+    - context
 - database
     - database/sql
     - MySQL Driver
