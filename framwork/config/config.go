@@ -1,34 +1,60 @@
 package config
 
 import (
+	"encoding/json"
+	"os"
 	"sync"
 )
 
 type (
 	ConfigIface interface {
-	}
-
-	ConfigParser interface {
+		Register(file string) error
+		Load(state interface{}) error
 	}
 
 	Config struct {
-		File   string
-		Parser ConfigParser
-		mu     *sync.RWMutex
-		items  map[interface{}]interface{}
+		lock *sync.RWMutex
+		file string
 	}
 )
 
-func New(parser ConfigParser) *Config {
-	return &Config{mu: new(sync.RWMutex)}
+func New() *Config {
+	return &Config{lock: new(sync.RWMutex)}
 }
 
-func (conf *Config) Items() map[interface{}]interface{} {
-	defer conf.mu.RUnlock()
-	conf.mu.RLock()
-	items := make(map[interface{}]interface{})
-	for k, v := range conf.items {
-		items[k] = v
+func (cfg *Config) Register(file string) error {
+	_, error := os.Stat(file)
+
+	if os.IsExist(error) {
+		return error
 	}
-	return items
+	// 注意 锁的粒度
+	defer cfg.lock.Unlock()
+	cfg.lock.Lock()
+	cfg.file = file
+	return nil
+}
+
+func (cfg *Config) Load(state interface{}) error {
+	cfg.lock.RLock()
+	fp, err := os.Open(cfg.file)
+	cfg.lock.RUnlock() // 注意粒度
+
+	if err != nil {
+		return err
+	}
+	defer fp.Close()
+	buf, bufs := make([]byte, 1024), make([]byte, 0) // 防止有0项
+	for {
+		n, _ := fp.Read(buf)
+		if n == 0 {
+			break
+		}
+		bufs = append(bufs, buf[:n]...)
+	}
+	err = json.Unmarshal(bufs, state)
+	if err != nil {
+		return err
+	}
+	return nil
 }
