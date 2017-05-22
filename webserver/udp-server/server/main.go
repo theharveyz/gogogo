@@ -24,37 +24,78 @@ func parse(ctx context.Context, data []byte) {
 
 var lock = new(sync.RWMutex)
 
-func udpSrv(ctx context.Context, exit chan<- bool) {
+const MAX_SIZE = 6 * 1024
 
-	listener, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 9981})
-	if err != nil {
-		fmt.Println(err)
-		exit <- true
+type (
+	UDPServer struct {
+		shutdown bool
+		listener *net.UDPConn
+		mu       *sync.RWMutex
+		ctx      context.Context
+		cancel   context.CancelFunc
 	}
+)
 
-	shutdown := false
+func NewUDPServer() *UDPServer {
+	ctx, cancel := context.WithCancel(context.Background())
+	return &UDPServer{
+		mu:     new(sync.RWMutex),
+		ctx:    ctx,
+		cancel: cancel,
+	}
+}
+
+func (udps *UDPServer) Listen(port int) {
+	listener, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: port})
+	// 必须启动才可以
+	if err != nil {
+		panic(err)
+	}
+	udps.listener = listener
+
+	fmt.Println("udp server listen successful at port ", port)
 
 	for {
-		lock.RLock()
-		if shutdown {
+		// 这里不需要加锁
+		if udps.IsShutdown() {
+			fmt.Println("udp server shutdown...")
 			break
 		}
-		lock.RUnlock()
-		data := make([]byte, 1024) // 重新赋值
-		n, remoteAddr, err := listener.ReadFromUDP(data)
-		fmt.Println("remote:", remoteAddr)
-		go parse(ctx, data)
+		data := make([]byte, MAX_SIZE) // 重新赋值
+		if n, remoteAddr, err := udps.listener.ReadFromUDP(data); err != nil {
+			fmt.Println("remote:", err)
+		} else {
+			fmt.Println("remote:", remoteAddr)
+			fmt.Println("n:", n)
+			newCtx := context.WithValue(udps.ctx, "data", data)
+			go udpHandler(newCtx)
+		}
 	}
+}
 
-	defer func() {
-		// close
-	}()
+func (udps *UDPServer) IsShutdown() bool {
+	defer udps.mu.RUnlock()
+	udps.mu.RLock()
+	return udps.shutdown
+}
 
-	return listener, func() {
-		defer lock.Unlock()
-		lock.Lock()
-		shutdown = true
+func (udps *UDPServer) Shutdown() {
+	defer udps.mu.Unlock()
+	udps.mu.Lock()
+	udps.shutdown = true
+}
+
+func (udps *UDPServer) GracefulShutdown() {
+
+}
+
+func udpHandler(ctx context.Context) error {
+	select {
+	case <-ctx.Done():
+		return nil
 	}
+	fmt.Println(ctx)
+	return nil
 }
 
 func main() {
@@ -62,7 +103,7 @@ func main() {
 	exit := make(chan bool)
 	signal.Notify(sign, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL)
 
-	ctx, cancel := context.WithCancel(context.Background())
+	udps := NewUDPServer()
 
 	go func() {
 		<-sign
@@ -72,13 +113,14 @@ func main() {
 		defer func() {
 			if err := recover(); err != nil {
 				fmt.Println(err)
-				exit <- true
 			}
 		}()
-		udpSrv(ctx, exit)
+		// 这里要求是阻塞的
+		udps.Listen(1992)
+		exit <- true
 	}()
 
 	<-exit
-	defer cancel()
+	udps.Shutdown()
 	// todo
 }
