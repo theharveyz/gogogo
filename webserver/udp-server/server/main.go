@@ -68,7 +68,15 @@ func main() {
 		<-sign
 		exit <- true
 	}()
-	go udpSrv(ctx, exit)
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				fmt.Println(err)
+				exit <- true
+			}
+		}()
+		udpSrv(ctx, exit)
+	}()
 
 	<-exit
 	defer cancel()
