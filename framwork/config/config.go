@@ -44,7 +44,7 @@ func (cfg *Config) Load(state interface{}) error {
 		return err
 	}
 	defer fp.Close()
-	buf, bufs := make([]byte, 1024), make([]byte, 0) // 防止有0项
+	buf, bufs := make([]byte, 1024), []byte{} // 防止有0项
 	for {
 		n, _ := fp.Read(buf)
 		if n == 0 {
