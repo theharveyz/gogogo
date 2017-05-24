@@ -6,25 +6,18 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
+	"time"
 )
 
-func init() {
-
-}
-
-func parse(ctx context.Context, data []byte) {
-	select {
-	case <-ctx.Done():
-		return
-	}
-
-}
-
-var lock = new(sync.RWMutex)
-
-const MAX_SIZE = 6 * 1024
+const (
+	MAX_SIZE                  = 6 * 1024
+	MIN_GRACEFUL_SECONDS      = 3
+	LF                   rune = 10
+	CR                   rune = 13
+)
 
 type (
 	UDPServer struct {
@@ -79,22 +72,31 @@ func (udps *UDPServer) IsShutdown() bool {
 	return udps.shutdown
 }
 
-func (udps *UDPServer) Shutdown() {
-	defer udps.mu.Unlock()
+func (udps *UDPServer) GracefulShutdown(d time.Duration) {
 	udps.mu.Lock()
 	udps.shutdown = true
-}
+	// 立即释放锁
+	udps.mu.Unlock()
 
-func (udps *UDPServer) GracefulShutdown() {
-
+	// 给定足够长时间,让未执行完的handler执行完
+	if d < MIN_GRACEFUL_SECONDS*time.Second {
+		d = MIN_GRACEFUL_SECONDS * time.Second
+	}
+	<-time.After(d)
 }
 
 func udpHandler(ctx context.Context) error {
 	select {
 	case <-ctx.Done():
 		return nil
+	default:
 	}
-	fmt.Println(ctx)
+	data, is := ctx.Value("data").([]byte)
+	if is {
+		fmt.Println(strings.TrimFunc(string(data), func(b rune) bool {
+			return (b == 0) || (b == LF) || (b == CR)
+		}))
+	}
 	return nil
 }
 
@@ -105,22 +107,26 @@ func main() {
 
 	udps := NewUDPServer()
 
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
 	go func() {
 		<-sign
 		exit <- true
 	}()
 	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				fmt.Println(err)
-			}
-		}()
 		// 这里要求是阻塞的
-		udps.Listen(1992)
+		udps.Listen(9981)
 		exit <- true
 	}()
 
 	<-exit
-	udps.Shutdown()
+	udps.GracefulShutdown(time.Second * 3)
+	now := time.Now()
+	fmt.Printf("\nThe udp server shutdown at: %d-%d-%d %d:%d:%d", now.Year(),
+		now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second())
 	// todo
 }
