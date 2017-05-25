@@ -79,8 +79,9 @@ func (udps *UDPServer) GracefulShutdown(d time.Duration) {
 	udps.mu.Unlock()
 
 	// 给定足够长时间,让未执行完的handler执行完
-	if d < MIN_GRACEFUL_SECONDS*time.Second {
-		d = MIN_GRACEFUL_SECONDS * time.Second
+	s := MIN_GRACEFUL_SECONDS * time.Second
+	if d < s {
+		d = s
 	}
 	<-time.After(d)
 }
