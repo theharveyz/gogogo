@@ -50,4 +50,6 @@ func main() {
 	var r rune
 	fmt.Println(unsafe.Sizeof(r)) // 4
 
+	var uptr uintptr
+	fmt.Println(unsafe.Sizeof(uptr)) // 8
 }
