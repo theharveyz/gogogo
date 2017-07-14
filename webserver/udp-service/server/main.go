@@ -119,9 +119,11 @@ func main() {
 		exit <- true
 	}()
 	go func() {
+		defer func(){
+			exit <- true // 这里保证一定会执行
+		}()
 		// 这里要求是阻塞的
 		udps.Listen(9981)
-		exit <- true
 	}()
 
 	<-exit
