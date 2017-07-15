@@ -25,6 +25,7 @@ func main() {
 		fmt.Println("timer2 stopped")
 	}
 
+	time.Since(time.Now())
 	// 未能及时终止
 	timer3 := time.NewTimer(time.Second)
 	time.Sleep(time.Second * 2)
