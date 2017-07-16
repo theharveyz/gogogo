@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -25,4 +28,14 @@ func main() {
 			// 	fmt.Println("select default")
 		}
 	}
+	go func() {
+		for {
+			fmt.Println("empty select1")
+			select {}
+			fmt.Println("empty select2")
+		}
+	}()
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+	<-c
 }
