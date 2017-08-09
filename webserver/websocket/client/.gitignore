@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+dist/
+.idea/
+test/unit/coverage
+test/e2e/reports
+*.log
+.htaccess
+.project
+.buildpath
+*.bak
+.settings
