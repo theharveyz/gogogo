@@ -11,4 +11,3 @@ app.use(serve(path.join(__dirname, "./static")))
 app.listen(port)
 
 opn('http://localhost:' + port)
-

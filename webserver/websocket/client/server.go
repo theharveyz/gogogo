@@ -10,7 +10,7 @@ import (
 
 func main() {
 	// static file server
-	http.Handle("/", http.FileServer(http.Dir("./client/static")))
+	http.Handle("/", http.FileServer(http.Dir("./static")))
 	go func() {
 		if err := http.ListenAndServe(":1901", nil); err != nil {
 			fmt.Println(err)
