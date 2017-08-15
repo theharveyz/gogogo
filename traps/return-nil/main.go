@@ -30,5 +30,5 @@ func main() {
 
 	var c Si
 	c = test()
-	fmt.Println("c is nil", c == nil) // 返回false， 即：有类型的nil不能，转换为interface类型时，interface的_data指针不为零值！！
+	fmt.Println("c is nil", c == nil) // 返回false， 即：有类型的nil，转换为interface类型时，interface的_data指针不为零值！！
 }
