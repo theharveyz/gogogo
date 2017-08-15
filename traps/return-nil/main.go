@@ -29,6 +29,7 @@ func main() {
 	fmt.Println("b is nil", b == nil)
 
 	var c Si
+	fmt.Println("c is nil", c == nil)
 	c = test()
 	fmt.Println("c is nil", c == nil) // 返回false， 即：有类型的nil，转换为interface类型时，interface的_data指针不为零值！！
 }
