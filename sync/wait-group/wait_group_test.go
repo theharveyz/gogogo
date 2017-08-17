@@ -12,17 +12,15 @@ func TestWaitGroup(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
-	}
-
-	for i := 0; i < 10; i++ {
 		// Done的定义
 		// func (wg *WaitGroup) Done() {
 		// 	wg.Add(-1)
 		// }
-		go func() {
-			wg.Done()
+		go func(i int) {
+			defer wg.Done()
+			fmt.Println(i)
 			time.Sleep(time.Second * 1)
-		}()
+		}(i)
 	}
 
 	wg.Wait() //
