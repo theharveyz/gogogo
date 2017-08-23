@@ -26,6 +26,13 @@ func (c Child) Test() {
 	fmt.Println("child test")
 }
 
+type Demoer interface {
+	Test()
+}
+type Demoer2 interface {
+	Demoer
+}
+
 func main() {
 	var c Child
 	// implement
@@ -43,4 +50,8 @@ func main() {
 	// 显式声明属性方式
 	c.OtherParent.Other()
 	// c.Other()  --- 则这种写法则不可以
+
+	var demo Demoer2
+	demo = c
+	demo.Test()
 }
