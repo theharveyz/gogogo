@@ -55,4 +55,8 @@ func main() {
 		// 执行到这里
 		fmt.Println("BBBBBBB")
 	}
+	var s *Student
+	if s == nil {
+		fmt.Println("a is nil")
+	}
 }
