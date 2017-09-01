@@ -46,7 +46,10 @@ func main() {
 	var c Si
 	fmt.Println("c is nil", c == nil)
 	c = test()
-	fmt.Println("c is nil", c == nil) // 返回false， 即：有类型的nil，转换为interface类型时，interface的_data指针不为零值！！
+	// 即：有类型的nil，转换为interface类型时，interface要对比:
+	// 1. *itab的*_type指针是否是nil,
+	// 2. data的*_data指针为nil
+	fmt.Println("c is nil", c == nil) // 返回false，很显然此interface的*_type指针不是nil
 
 	// interface比较的是data是否是nil
 	if live() == nil {
