@@ -60,4 +60,9 @@ func main() {
 	two := append(one, 2)
 	two[0] = 2
 	fmt.Println(one, two) // [1], [2,2]
+
+	// [:] 0-...
+	fmt.Println(two[:])
+	// output:
+	// [2, 2]
 }
