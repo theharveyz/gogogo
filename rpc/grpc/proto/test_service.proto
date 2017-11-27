@@ -1,0 +1,59 @@
+// XXX: 语法声明要放前面
+syntax="proto3";
+package testservice;
+
+// import "google/protobuf/any.proto";
+
+service Test {
+    // 简单的Rpc接口
+    rpc ShowList(RequestList) returns(Result){}
+
+    // server-to-client rpc, 客户端拿到服务端返回的stream流
+    rpc S2CStream(RequestList) returns(stream Result){}
+
+    // client-to-server, 服务端拿到客户端请求的stream
+    rpc C2SStream(stream RequestList) returns(Result){}
+
+    // 双向流
+    rpc BIDirectionStream(stream RequestList) returns(stream Result){}
+}
+
+// 数组对象
+message RequestList {
+    // 注意: 不可使用 Persion.Info, 因为Info不是嵌套的message, 只有嵌套的才能这样套用
+    repeated Person persons = 1;
+}
+
+// 定义Map类型:
+// 序列化后的顺序和map迭代器的顺序是不确定的，所以你不要期望以固定顺序处理Map
+// Map也可以是repeated的
+// 如果存在重复的Key, 则后一个Key不会使用. 数值类型按顺序排列
+message Person {
+    map<string, string> Info = 1;
+}
+
+
+// 标示符预留各个字段在二进制消息体位置, [1-15]占一个字节. 注意: 为了节省空间,频繁使用的标示符数目要尽量小
+message Result {
+    int64 code = 1; 
+    string message = 2;
+    // 可选的, 任意类型,对应 go的 []byte
+    bytes data = 3;
+
+    // 对于枚举，默认是第一个定义的枚举值，必须为0;
+    enum Status {
+        // XXX: 选项: 允许别名 
+        option allow_alias=true; // 当此项选择时,则下面必须有重复的才行
+        OK = 0;
+        NOCONTENT = 0;
+        CLIENT_ERROR = 400;
+        SERVER_ERROR = 500;
+    }
+
+    Status status=4;
+}
+
+// XXX:
+/*
+ optional, Required 在proto3 都不再支持
+*/
