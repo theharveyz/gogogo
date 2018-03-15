@@ -30,6 +30,8 @@ My learning examples for Golang.
     - json rpc
     - gRPC
     - protobuf
+- mq
+    - nsq
 - common
     - config
     - gcd
